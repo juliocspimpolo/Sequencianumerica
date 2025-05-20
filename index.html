@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Gerador Lotofácil</title>
+  <meta charset="UTF-8" />
+  <title>Gerador Lotofácil - 6 Frações</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -13,11 +13,20 @@
     h1, h2 {
       color: #333;
     }
+    .bloco {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 450px;
+    }
     .dezenas {
       display: flex;
       flex-wrap: wrap;
       max-width: 400px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     .dezenas button {
       width: 50px;
@@ -39,61 +48,53 @@
       background: #f1f1f1;
       border-color: #aaa;
     }
-    button#gerar, button#download {
+    button.gerar, button.download {
       padding: 10px 20px;
       background: #4CAF50;
       color: #fff;
       border: none;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
       margin-right: 10px;
       border-radius: 5px;
       transition: background-color 0.3s;
     }
-    button#gerar:hover, button#download:hover {
+    button.gerar:hover, button.download:hover {
       background: #45a049;
     }
-    #resultado {
-      margin-top: 20px;
+    .resultado {
+      margin-top: 15px;
       white-space: pre-wrap;
       background: #fff;
       padding: 10px;
       border: 1px solid #ccc;
-      max-height: 500px;
+      max-height: 300px;
       overflow-y: auto;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-family: monospace;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1>Gerador Lotofácil - 7 Dezenas Travadas</h1>
-  <h2>Escolha 7 dezenas:</h2>
-  <div class="dezenas" id="dezenas"></div>
-  <button id="gerar">Gerar Jogos</button>
-  <button id="download" style="display: none;">Baixar como TXT</button>
-  <div id="resultado"></div>
 
-  <script>
-    // Cria os botões de dezenas
-    const dezenasContainer = document.getElementById("dezenas");
-    for (let i = 6; i <= 18; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i.toString().padStart(2, '0');
-      btn.addEventListener("click", () => {
-        btn.classList.toggle("selected");
-        const selecionadas = document.querySelectorAll(".dezenas button.selected");
-        if (selecionadas.length > 7) {
-          btn.classList.remove("selected");
-          alert("Você só pode selecionar 7 dezenas.");
-        }
-      });
-      dezenasContainer.appendChild(btn);
-    }
+  <h1>Gerador Lotofácil - 6 Frações com 7 Fixas no Meio</h1>
+  <h1>Escolha suas dezenas separadamente</h1>
 
-    // Exemplo de tabelas (adicione as demais conforme necessário)
-    const tabelas = [
+  <div id="container-blocos">
+    <!-- Os 6 blocos serão inseridos aqui via JS -->
+  </div>
+
+<script>
+  const NUM_BLOCOS = 6;
+  const MIN_DEZENA = 6;
+  const MAX_DEZENA = 18;
+
+  // Exemplo de tabelas específicas para cada bloco (adicione as suas reais)
+  const tabelasPorBloco = [
+    [ // Bloco 1
       ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "25"],
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "22", "23", "24", "25"],
 ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "23", "25"],
@@ -109,7 +110,9 @@
 ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "23", "24", "25"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "22", "24", "25"],
-["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "22", "23", "24"],
+],
+    [ // Bloco 2
+      ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "22", "23", "24"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "23"],
 ["02", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "23", "24", "25"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "22", "23", "25"],
@@ -124,7 +127,9 @@
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "23", "24"],
 ["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "23", "24", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
-["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
+],
+    [ // Bloco 3
+      ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "24", "25"],
 ["02", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "23", "24"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
@@ -139,7 +144,9 @@
 ["02", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "24"],
 ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "22", "23", "24"],
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "23", "24"],
-["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
+],
+    [ // Bloco 4
+      ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
 ["02", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "23", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "25"],
@@ -154,7 +161,9 @@
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "24", "25"],
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "23", "24", "25"],
 ["03", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "24", "25"],
-["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "25"],
+],
+    [ // Bloco 5
+     ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "25"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
 ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "25"],
 ["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "21", "23", "24", "25"],
@@ -169,7 +178,9 @@
 ["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "22", "23", "24", "25"],
-["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
+],
+    [ // Bloco 6
+      ["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "23", "24"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "21", "22", "24"],
 ["01", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "24", "25"],
 ["01", "02", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "24", "25"],
@@ -184,35 +195,104 @@
 ["02", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "22", "23", "24", "25"],
 ["02", "03", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "22", "23", "24", "25"],
 ["01", "04", "05", "00", "00",  "00", "00", "00", "00", "00", "19", "20", "22", "24", "25"],
-    ];
-   document.getElementById("gerar").addEventListener("click", () => {
-      const selecionadas = [...document.querySelectorAll(".dezenas button.selected")].map(btn => btn.textContent);
+],
+  ];
+
+  const containerBlocos = document.getElementById("container-blocos");
+
+  // Função para criar botões de dezenas para um bloco
+  function criarBotoesDezenas(idBloco) {
+    const div = document.createElement("div");
+    div.classList.add("dezenas");
+    div.id = `dezenas-${idBloco}`;
+
+    for (let i = MIN_DEZENA; i <= MAX_DEZENA; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i.toString().padStart(2, '0');
+      btn.type = "button";
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("selected");
+        const selecionadas = div.querySelectorAll("button.selected");
+        if (selecionadas.length > 7) {
+          btn.classList.remove("selected");
+          alert("Você só pode selecionar 7 dezenas.");
+        }
+      });
+      div.appendChild(btn);
+    }
+    return div;
+  }
+
+  // Criar cada bloco no container
+  for (let bloco = 0; bloco < NUM_BLOCOS; bloco++) {
+    const blocoDiv = document.createElement("div");
+    blocoDiv.classList.add("bloco");
+    blocoDiv.id = `bloco-${bloco}`;
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = `Bloco ${bloco + 1} - Escolha 7 dezenas:`;
+    blocoDiv.appendChild(titulo);
+
+    // Adiciona os botões de dezenas
+    blocoDiv.appendChild(criarBotoesDezenas(bloco));
+
+    // Botões gerar e download
+    const btnGerar = document.createElement("button");
+    btnGerar.textContent = "Gerar Jogos";
+    btnGerar.classList.add("gerar");
+    blocoDiv.appendChild(btnGerar);
+
+    const btnDownload = document.createElement("button");
+    btnDownload.textContent = "Baixar como TXT";
+    btnDownload.classList.add("download");
+    btnDownload.style.display = "none";
+    blocoDiv.appendChild(btnDownload);
+
+    // Área de resultado
+    const resultado = document.createElement("pre");
+    resultado.classList.add("resultado");
+    blocoDiv.appendChild(resultado);
+
+    containerBlocos.appendChild(blocoDiv);
+
+    // Evento do botão Gerar jogos
+    btnGerar.addEventListener("click", () => {
+      const dezenasDiv = document.getElementById(`dezenas-${bloco}`);
+      const selecionadas = [...dezenasDiv.querySelectorAll("button.selected")].map(b => b.textContent);
       if (selecionadas.length !== 7) {
         alert("Selecione exatamente 7 dezenas.");
         return;
       }
 
-      let resultado = "";
-      tabelas.forEach((tabela, index) => {
-        const jogo = tabela.map(num => num === "00" ? selecionadas.shift() : num);
-        resultado += `Jogo ${index + 1}: ${jogo.join(" ")}\n`;
-        selecionadas.unshift(...jogo.filter(n => !tabela.includes(n) && n !== "00").slice(0, 7)); // restaurar fixas
+      // Copia a lista para não perder ao substituir
+      let dezenasParaUsar = [...selecionadas];
+
+      let resultadoTexto = "";
+      tabelasPorBloco[bloco].forEach((tabela, index) => {
+        // Para cada jogo na tabela do bloco, substitui os '00' pelas dezenas selecionadas na ordem
+        const jogo = tabela.map(num => num === "00" ? dezenasParaUsar.shift() : num);
+        resultadoTexto += `Jogo ${index + 1}: ${jogo.join(" ")}\n`;
+        // Restaurar dezenas para próxima substituição (mesma lógica do seu código original)
+        dezenasParaUsar.unshift(...jogo.filter(n => !tabela.includes(n) && n !== "00").slice(0, 7));
       });
 
-      document.getElementById("resultado").textContent = resultado;
-      document.getElementById("download").style.display = "inline-block";
+      resultado.textContent = resultadoTexto;
+      btnDownload.style.display = "inline-block";
     });
 
-    document.getElementById("download").addEventListener("click", () => {
-      const texto = document.getElementById("resultado").textContent;
+    // Evento do botão download
+    btnDownload.addEventListener("click", () => {
+      const texto = resultado.textContent;
       const blob = new Blob([texto], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "jogos_lotofacil.txt";
+      link.download = `jogos_lotofacil_bloco_${bloco + 1}.txt`;
       link.click();
       URL.revokeObjectURL(url);
     });
-  </script>
+  }
+</script>
+
 </body>
 </html>
