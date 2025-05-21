@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verificador de Resultados Lotofácil</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .bloco {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+    .dezenas {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .dezenas button {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      background: #ffffff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .dezenas button.selected {
+      background: #4CAF50;
+      color: #fff;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button.verificar {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .resultado {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Verificador de Resultados Lotofácil</h1>
+
+  <div class="bloco">
+    <h2>Selecione o Resultado Oficial</h2>
+    <div class="dezenas" id="resultado-oficial">
+      <!-- Botões de 01 a 25 -->
+    </div>
+
+    <h2>Cole seus jogos (um por linha):</h2>
+    <textarea id="jogos" placeholder="Ex:&#10;01 03 05 06 07 08 09 10 11 12 13 14 15 16 17"></textarea>
+
+    <button class="verificar" onclick="verificarResultados()">Verificar</button>
+    <button class="verificar" onclick="limparTudo()">Limpar Tudo</button>
+
+    <div class="resultado" id="resultado-final">
+      <!-- Resultados aqui -->
+    </div>
+  </div>
+
+  <script>
+    // Gera botões de 01 a 25
+    const container = document.getElementById('resultado-oficial');
+    for (let i = 1; i <= 25; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i.toString().padStart(2, '0');
+      btn.onclick = () => btn.classList.toggle('selected');
+      container.appendChild(btn);
+    }
+
+    function verificarResultados() {
+      const selecionados = [...document.querySelectorAll('.dezenas button.selected')]
+        .map(btn => btn.textContent);
+      if (selecionados.length !== 15) {
+        alert('Selecione exatamente 15 dezenas como resultado oficial.');
+        return;
+      }
+
+      const resultadoSet = new Set(selecionados);
+      const jogosText = document.getElementById('jogos').value.trim();
+      const jogos = jogosText.split('\n').map(linha =>
+        linha.trim().split(/\s+/).filter(d => d).map(d => d.padStart(2, '0'))
+      );
+
+      const resultados = jogos.map(jogo => {
+        const acertos = jogo.filter(dezena => resultadoSet.has(dezena)).length;
+        return { jogo: jogo.join(' '), acertos };
+      });
+
+      // Organiza por número de acertos (decrescente)
+      resultados.sort((a, b) => b.acertos - a.acertos);
+
+      // Agrupa e exibe
+      let saida = '';
+      for (let i = 15; i >= 1; i--) {
+        const grupo = resultados.filter(r => r.acertos === i);
+        if (grupo.length > 0) {
+          saida += `➡️ ${i} acertos (${grupo.length} jogo${grupo.length > 1 ? 's' : ''}):\n`;
+          grupo.forEach(g => saida += `  ${g.jogo}\n`);
+          saida += '\n';
+        }
+      }
+
+      document.getElementById('resultado-final').textContent = saida || 'Nenhum jogo encontrado.';
+    }
+
+    function limparTudo() {
+      document.querySelectorAll('.dezenas button.selected')
+        .forEach(btn => btn.classList.remove('selected'));
+      document.getElementById('jogos').value = '';
+      document.getElementById('resultado-final').textContent = '';
+    }
+  </script>
+</body>
+</html>
