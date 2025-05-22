@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerador Lotofácil - 6 Frações</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .bloco {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 450px;
+    }
+    .dezenas {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 400px;
+      margin-bottom: 15px;
+    }
+    .dezenas button {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      background: #ffffff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dezenas button.selected {
+      background: #4CAF50;
+      color: #fff;
+    }
+    .dezenas button:hover {
+      background: #f1f1f1;
+      border-color: #aaa;
+    }
+    button.gerar, button.download {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button.gerar:hover, button.download:hover {
+      background: #45a049;
+    }
+    .resultado {
+      margin-top: 15px;
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Gerador Lotofácil - 6 Frações com 8 Fixas no Meio</h1>
+  <h2>Quando gerar todos os 6 BLOCOS no final da página será possível fazer o Download de todos os jogos consolidados! <br>Escolha as dezenas em cada bloco separadamente, você pode repetir dezenas quantas vezes quiser! <br>Faça o Download dos jogos em TXT após Gerar os Jogos separadamente caso prefira!</h2>
+
+  <div id="container-blocos">
+      </div>
+
+    <button id="download-todos-jogos">Baixar TODOS os Jogos Gerados</button>
+
+<script>
+  const NUM_BLOCOS = 6;
+  const MIN_DEZENA = 5;
+  const MAX_DEZENA = 19;
+
+  // Exemplo de tabelas específicas para cada bloco (adicione as suas reais)
+  const tabelasPorBloco = [
+     [ // Bloco 1
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+],
+    [ // Bloco 2
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+],
+    [ // Bloco 3
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+],
+
+    [ // Bloco 4
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+],
+
+    [ // Bloco 5
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "23"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "23"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "24", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "24", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "24"],
+],
+
+    [ // Bloco 6
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "23"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "22", "24"],
+["01", "02", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "24", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "24"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "21", "23", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "22", "25"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "23", "24", "25"],
+["03", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "22", "23", "25"],
+["02", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["02", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["01", "03", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "22"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "23", "24"],
+["01", "04", "05", "00", "00", "00", "00", "00", "00", "00", "00", "19", "20", "21", "25"],
+],
+
+  ];
+
+  const containerBlocos = document.getElementById("container-blocos");
+  // Adiciona um novo array para armazenar os textos de todos os jogos gerados
+  const todosOsJogosGerados = [];
+  const btnDownloadTodosJogos = document.getElementById("download-todos-jogos");
+  btnDownloadTodosJogos.style.display = "none"; // Garante que esteja oculto inicialmente
+
+  // Função para criar botões de dezenas para um bloco
+  function criarBotoesDezenas(idBloco) {
+    const div = document.createElement("div");
+    div.classList.add("dezenas");
+    div.id = `dezenas-${idBloco}`;
+
+    for (let i = MIN_DEZENA; i <= MAX_DEZENA; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i.toString().padStart(2, '0');
+      btn.type = "button";
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("selected");
+        const selecionadas = div.querySelectorAll("button.selected");
+        if (selecionadas.length > 8) {
+          btn.classList.remove("selected");
+          alert("Você só pode selecionar 8 dezenas.");
+        }
+      });
+      div.appendChild(btn);
+    }
+    return div;
+  }
+
+  // Criar cada bloco no container
+  for (let bloco = 0; bloco < NUM_BLOCOS; bloco++) {
+    const blocoDiv = document.createElement("div");
+    blocoDiv.classList.add("bloco");
+    blocoDiv.id = `bloco-${bloco}`;
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = `Bloco ${bloco + 1} - Escolha 8 dezenas:`;
+    blocoDiv.appendChild(titulo);
+
+    // Adiciona os botões de dezenas
+    blocoDiv.appendChild(criarBotoesDezenas(bloco));
+
+    // Botões gerar e download
+    const btnGerar = document.createElement("button");
+    btnGerar.textContent = "Gerar Jogos";
+    btnGerar.classList.add("gerar");
+    blocoDiv.appendChild(btnGerar);
+
+    const btnDownload = document.createElement("button");
+    btnDownload.textContent = "Baixar como TXT";
+    btnDownload.classList.add("download");
+    btnDownload.style.display = "none";
+    blocoDiv.appendChild(btnDownload);
+
+    // Área de resultado
+    const resultado = document.createElement("pre");
+    resultado.classList.add("resultado");
+    blocoDiv.appendChild(resultado);
+
+    containerBlocos.appendChild(blocoDiv);
+
+    // Evento do botão Gerar jogos
+    btnGerar.addEventListener("click", () => {
+      const dezenasDiv = document.getElementById(`dezenas-${bloco}`);
+      const selecionadas = [...dezenasDiv.querySelectorAll("button.selected")].map(b => b.textContent);
+      if (selecionadas.length !== 8) {
+        alert("Selecione exatamente 8 dezenas.");
+        return;
+      }
+
+      // Copia a lista para não perder ao substituir
+      let dezenasParaUsar = [...selecionadas];
+
+      let resultadoTexto = "";
+      let jogosDoBlocoAtual = []; // Array para guardar os jogos específicos deste bloco
+
+      tabelasPorBloco[bloco].forEach((tabela, index) => {
+        // Para cada jogo na tabela do bloco, substitui os '00' pelas dezenas selecionadas na ordem
+        const jogo = tabela.map(num => num === "00" ? dezenasParaUsar.shift() : num);
+        const jogoFormatado = `Jogo ${index + 1}: ${jogo.join(" ")}`;
+        resultadoTexto += jogoFormatado + "\n";
+        jogosDoBlocoAtual.push(jogoFormatado); // Adiciona o jogo formatado ao array do bloco atual
+        // Restaurar dezenas para próxima substituição (mesma lógica do seu código original)
+        dezenasParaUsar.unshift(...jogo.filter(n => !tabela.includes(n) && n !== "00").slice(0, 8));
+      });
+
+      resultado.textContent = resultadoTexto;
+      btnDownload.style.display = "inline-block";
+
+      // Armazena os jogos gerados para este bloco no array geral
+      // Adiciona um cabeçalho para facilitar a identificação dos blocos no arquivo final
+      todosOsJogosGerados[bloco] = `--- Jogos do Bloco ${bloco + 1} ---\n` + jogosDoBlocoAtual.join("\n") + "\n\n";
+
+      // Verifica se todos os blocos foram gerados para exibir o botão de download geral
+      const blocosGerados = todosOsJogosGerados.filter(item => item !== undefined && item !== null).length;
+      if (blocosGerados === NUM_BLOCOS) {
+          btnDownloadTodosJogos.style.display = "block"; // Exibe o botão geral
+      }
+    });
+
+    // Evento do botão download (individual do bloco)
+    btnDownload.addEventListener("click", () => {
+      const texto = resultado.textContent;
+      const blob = new Blob([texto], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `jogos_lotofacil_bloco_${bloco + 1}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // Evento do botão "Baixar TODOS os Jogos Gerados"
+  btnDownloadTodosJogos.addEventListener("click", () => {
+      // Concatena todos os conteúdos dos blocos em uma única string
+      const textoCompleto = todosOsJogosGerados.join("");
+      const blob = new Blob([textoCompleto], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `todos_jogos_lotofacil_gerados.txt`; // Nome do arquivo final
+      link.click();
+      URL.revokeObjectURL(url);
+  });
+
+</script>
+
+</body>
+</html>
